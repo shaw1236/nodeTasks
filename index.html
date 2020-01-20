@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script>
+            async function api(iv_query) {
+                 const server = "http://localhost:4000"; 
+                 const url = `${server}/graphql`;
+                 const query = {"query": iv_query};
+                 const res = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'description-Type': 'application/json'
+                    },
+                    body: JSON.stringify(query),
+                    //credentials: 'include',
+                })
+                const body = await res.json();  
+                return body;             
+            }
+
+            async function onGetTaskList(e) {
+                e.preventDefault();
+                const body = await api("query { getTaskList{id title description done} }");
+                body.data.getTaskList.map(Task=> console.log(Task));
+                alert(JSON.stringify(body.data.getTaskList));
+            }
+     
+            async function onGetTask(e) {
+                e.preventDefault();
+                const id = Number(document.getElementById('getTask-id').value);
+                const body = await api("query { getTaskList{id title description done} }");  
+
+                console.log(body.data.getTask);
+                alert(JSON.stringify(body.data.getTask));
+            }
+
+            async function onCreateTask(e) {
+                e.preventDefault();
+                const title = document.getElementById('createTask-title').value;
+                const description = document.getElementById('createTask-description').value;
+                const body = await api(`mutation { createTask(title: "${title}", description: "${description}") {id title description} }`);  
+
+                console.log(body.data.createTask);
+                alert(JSON.stringify(body.data.createTask));
+            }
+              
+            async function onUpdateTask(e) {
+                e.preventDefault()
+                const id = document.getElementById('updateTask-id').value;
+                const title = document.getElementById('updateTask-title').value;
+                const description = document.getElementById('updateTask-description').value;
+                const body = await api(`mutation { updateTask(id: ${id}, description: "${description}", title: "${title}") }`);
+
+                console.log(body.data.updateTask);
+                alert(JSON.stringify(body.data.updateTask));
+            }
+            
+            async function onDeleteTask(e) {
+                e.preventDefault()
+                const id = document.getElementById('deleteTask-id').value;
+                const body = await api(`mutation { deleteTask(id: ${id}) }`);
+
+                console.log(body.data.deleteTask);
+                alert(JSON.stringify(body.data.deleteTask));
+            }
+            
+            function render() {
+                document.getElementById('app').innerHTML = `
+                    <h1> Task GraphQL API Test </h1>
+                    <div>
+                        <h2>Get Task List</h2>
+                        <form onsubmit="onGetTaskList(event)">
+                            <button>getTaskList</button>
+                        </form>
+                    </div>
+                    <hr>
+                    <div>
+                        <h2>Get Task</h2>
+                        <form onsubmit="onGetTask(event)">
+                            <div><label>Id&nbsp;&nbsp;<input id="getTask-id" type="number" min="1" required/></label></div>
+                            <button>getTask</button>
+                        </form>
+                    </div>
+                    <hr>
+                    <div>
+                        <h2>Create Task</h2>    
+                        <form onsubmit="onCreateTask(event)">
+                            <div><label>title&nbsp;<input id="createTask-title" type="text"/></label></div>
+                            <div><label>description&nbsp;<input id="createTask-description" type="text"/></label></div>
+                            <button>createTask</button>
+                        </form>
+                    </div>
+                    <hr>
+                    <div>
+                        <h2>Update/patch Task</h2>
+                        <form onsubmit="onUpdateTask(event)">
+                            <div><label>Id&emsp;<input id="updateTask-id" type="number" required/></label></div>
+                            <div><label>title&nbsp;<input id="updateTask-title" type="text"/></label></div>
+                            <div><label>description&nbsp;<input id="updateTask-description" type="text"/></label></div>
+                            <button>updateTask</button>
+                        </form>
+                    </div>
+                    <hr>
+                    <div>
+                        <h2>Delete Task</h2>
+                        <form onsubmit="onDeleteTask(event)">
+                            <div><label>Id&emsp;<input id="deleteTask-id" type="number" required/></label></div>
+                            <button>deleteTask</button>
+                        </form>
+                    </div>
+                `      
+            }
+        </script>
+    </head>
+    <body>
+        <div id="app"></div>
+        <script>render()</script>
+    </body>
+</html>
