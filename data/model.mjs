@@ -22,11 +22,10 @@
 // Load the enviroment variables to process from .env
 import dotenv from 'dotenv';
 
-dotenv.config()
+dotenv.config();
 const databaseUrl = process.env.DATABASEURL;
 
 import Sequelize from 'sequelize';
-import DataType from 'sequelize';
 
 // src/data/sequelize.js
 const sequelize = new Sequelize(databaseUrl, {
@@ -39,20 +38,20 @@ const sequelize = new Sequelize(databaseUrl, {
 // src/data/models/taskTable.js
 const dataModel = sequelize.define('tasks', {
     id: {
-           type: DataType.INTEGER,
+           type: Sequelize.INTEGER,
            allowNull: false,
            primaryKey: true,
            autoIncrement: true
     }, 
     title: {
-        type: DataType.STRING,
+        type: Sequelize.STRING,
         allowNull: false,
 	},
 	description: {
-        type: DataType.STRING,
+        type: Sequelize.STRING,
 	},
 	done: {
-        type: DataType.BOOLEAN,
+        type: Sequelize.BOOLEAN,
         defaultValue: false
     }
 });

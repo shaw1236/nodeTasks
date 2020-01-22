@@ -1,4 +1,4 @@
-// APIs for graphql ES version
+// APIs for graphql ES6 version
 //
 // Purpose: create schema for graphql
 //
